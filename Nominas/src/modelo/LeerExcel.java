@@ -28,18 +28,19 @@ public class LeerExcel
    static int count = 0;
    static String err;
    static String stringValorCelda;
+   static String pos;
    
    //LISTAS
-   static ArrayList<String> cuenta = new ArrayList<String>();
-    static ArrayList<String> nacion = new ArrayList<String>();
    static ArrayList<Objeto> erroneos = new ArrayList<Objeto>();
    static InputStream inputExcel = null;
+   static ArrayList<Objeto> iban = new ArrayList<Objeto>();
+   static ArrayList<String> listDNI = new ArrayList<String>();
 
    //LLAMADAS
    static Objeto obj = new Objeto();
    
-    //HACE UNA PRIMERA APERTURA DEL ARCHIVO EXCEL Y DEVUELVE UNA LISTA CON LOS DNI PARA BUSCAR LOS ERRONEOS
-    public ArrayList<String> devuelveCuenta (File fileExcel)
+    
+    public ArrayList<Objeto> devuelveTodo (File fileExcel)
     {  
         try 
         {
@@ -47,11 +48,11 @@ public class LeerExcel
             XSSFWorkbook parametro = new XSSFWorkbook(inputExcel);
             XSSFSheet leerFilCoum = parametro.getSheetAt(0);                       
             filas = leerFilCoum.getLastRowNum();
-            colum = 0;            
-
-
-            for (int r = 0; r < filas; r++) 
+            colum = 0;  
+            
+            for (int r = 0; r < filas +1; r++) 
             {
+                obj = new Objeto();
                 valorCelda = leerFilCoum.getRow(r);
 
                 if (valorCelda == null)
@@ -63,17 +64,37 @@ public class LeerExcel
                 {
                     for (int c = 0; c < (colum = valorCelda.getLastCellNum()); c++) 
                     {
-                        //SE COGE SOLO LA 3 COLUMNA DONDE ESTA EL DNI, PARA PROCESAR SOLO ESOS DATOS
-                        if(c == 10 && r > 0)
-                        {
-                            stringValorCelda = valorCelda.getCell(c) == null?"":(valorCelda.getCell(c).getCellType() == CellType.STRING)?valorCelda.getCell(c).getStringCellValue():(valorCelda.getCell(c).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(c).getNumericCellValue():(valorCelda.getCell(c).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(c).getBooleanCellValue():(valorCelda.getCell(c).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(c).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(c).getCellType() == CellType.ERROR)?"ERROR":"";
-                            cuenta.add(stringValorCelda);
+                        
+                        stringValorCelda = valorCelda.getCell(c) == null?"":(valorCelda.getCell(c).getCellType() == CellType.STRING)?valorCelda.getCell(c).getStringCellValue():(valorCelda.getCell(c).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(c).getNumericCellValue():(valorCelda.getCell(c).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(c).getBooleanCellValue():(valorCelda.getCell(c).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(c).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(c).getCellType() == CellType.ERROR)?"ERROR":"";
+                        pos = r + "";
+                        obj.setPos(pos);
+                        switch(c){
+                            case 0:
+                                obj.setNombreTrabajador(stringValorCelda);
+                                break;
+                            case 1:
+                                obj.setPrimerApell(stringValorCelda);
+                                break;
+                            case 2:
+                                obj.setSegApell(stringValorCelda);
+                                break;
+                            case 6:
+                                obj.setNombreEmpre(stringValorCelda);
+                                break;
+                            case 10:
+                                obj.setCuenta(stringValorCelda);
+                                break;
+                            case 11:
+                                obj.setNacion(stringValorCelda);
+                                break;
                         }
+                       
                     }
                 }
+                iban.add(obj);
             }
             
-            return cuenta;
+            return iban;
         } 
         catch (FileNotFoundException notFound) 
         {
@@ -94,10 +115,80 @@ public class LeerExcel
                 System.out.println("Error al cerrar el fichero: " + close);
             }
         }
-        return cuenta;
+        return iban;
+    }
+
+    
+    public void escribirIbanEmail(File fileExcel,ArrayList<Objeto> emailCompleto)
+    {
+     try 
+        {
+            inputExcel = new FileInputStream(fileExcel);
+            XSSFWorkbook parametro = new XSSFWorkbook(inputExcel);
+            XSSFSheet leerFilCoum = parametro.getSheetAt(0);                       
+            filas = leerFilCoum.getLastRowNum();
+            colum = 0;            
+            int count = 0;
+            int r;
+
+
+                for(Objeto obj : emailCompleto)
+                {
+                    r = Integer.parseInt(obj.getPos());
+                    valorCelda = leerFilCoum.getRow(r);
+                    err = obj.getEmail();
+                    
+                    
+                    if (valorCelda == null)
+                    {
+                        //SI NO EXISTE VALOR EN ESA CELDA NO SE RECORRERA
+                        break;
+                    }
+                    else
+                    {
+                        for (int c = 0; c < (colum = valorCelda.getLastCellNum()); c++) 
+                        {
+                            //SE COGE SOLO LA 3 COLUMNA DONDE ESTA EL DNI, PARA PROCESAR SOLO ESOS DATOS
+                            if(c == 5 && r > 0)
+                            {
+                               stringValorCelda = valorCelda.getCell(c) == null?"":(valorCelda.getCell(c).getCellType() == CellType.STRING)?valorCelda.getCell(c).getStringCellValue():(valorCelda.getCell(c).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(c).getNumericCellValue():(valorCelda.getCell(c).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(c).getBooleanCellValue():(valorCelda.getCell(c).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(c).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(c).getCellType() == CellType.ERROR)?"ERROR":"";
+
+                               leerFilCoum.getRow(r).createCell(c).setCellValue(err);
+
+                               try (FileOutputStream ficheroCambiado = new FileOutputStream(new File("resources/SistemasInformacionII.xlsx"))) {
+                                                parametro.write(ficheroCambiado);
+                               }catch(Exception e)
+                               {}
+
+                            }
+                        }
+                    }
+                    count++;
+                }
+            
+        } 
+        catch (FileNotFoundException notFound) 
+        {
+            System.out.println("El fichero no fue encontrado: " + notFound);
+        } 
+        catch (IOException process) 
+        {
+            System.out.println("Error al procesarlo: " + process);
+        } 
+        finally 
+        {
+            try 
+            {
+                inputExcel.close();
+            } 
+            catch (IOException close) 
+            {
+                System.out.println("Error al cerrar el fichero: " + close);
+            }
+        }
     }
     
-    public ArrayList<String> devuelveNacion(File fileExcel)
+    public ArrayList<String> primeraLectura(File fileExcel)
     {  
         try 
         {
@@ -122,16 +213,16 @@ public class LeerExcel
                     for (int c = 0; c < (colum = valorCelda.getLastCellNum()); c++) 
                     {
                         //SE COGE SOLO LA 3 COLUMNA DONDE ESTA EL DNI, PARA PROCESAR SOLO ESOS DATOS
-                        if(c == 11 && r > 0)
+                        if(c == 3 && r > 0)
                         {
                             stringValorCelda = valorCelda.getCell(c) == null?"":(valorCelda.getCell(c).getCellType() == CellType.STRING)?valorCelda.getCell(c).getStringCellValue():(valorCelda.getCell(c).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(c).getNumericCellValue():(valorCelda.getCell(c).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(c).getBooleanCellValue():(valorCelda.getCell(c).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(c).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(c).getCellType() == CellType.ERROR)?"ERROR":"";
-                            nacion.add(stringValorCelda);
+                            listDNI.add(stringValorCelda);
                         }
                     }
                 }
             }
             
-            return nacion;
+            return listDNI;
         } 
         catch (FileNotFoundException notFound) 
         {
@@ -152,8 +243,9 @@ public class LeerExcel
                 System.out.println("Error al cerrar el fichero: " + close);
             }
         }
-        return nacion;
+        return listDNI;
     }
+    
     //HACE UNA SEGUNDA APERTURA DEL ARCHIVO EXCEL Y DEVUELTE UN ARRAYLIST<OBJETO>(LISTA DE TRABAJADORES)
     public ArrayList<Objeto> segundaLectura(File fileExcel,ArrayList<String> listErroneos,ArrayList<Integer> idPos)
     {
@@ -257,4 +349,5 @@ public class LeerExcel
         return erroneos;
     }
     
+
 }

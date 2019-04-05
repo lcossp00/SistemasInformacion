@@ -8,6 +8,7 @@ package modelo;
 import controlador.Nomina;
 import controlador.Trabajadorbbdd;
 import java.util.List;
+import net.sf.ehcache.hibernate.HibernateUtil;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.cfg.AnnotationConfiguration;

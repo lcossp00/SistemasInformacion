@@ -1,11 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package vista;
 
+import controlador.ConvertirDOM;
+import controlador.Corregir;
+import controlador.GeneradorEmail;
 import controlador.GeneradorIBAN;
+import controlador.Objeto;
 import java.io.File;
 import java.util.ArrayList;
 import javax.xml.parsers.ParserConfigurationException;
@@ -16,7 +15,7 @@ import modelo.LeerExcel;
 
 public class Principal 
 {
-   /*
+   
    //VARIABLES
     static int i = 0;
     //LISTAS
@@ -28,20 +27,24 @@ public class Principal
     //LLAMADAS
     static LeerExcel read = new LeerExcel();
     static Corregir correct = new Corregir();
-   // static ConvertirDOM dom = new ConvertirDOM();*/
-    //PRACTICA 3
-    static LeerExcel read = new LeerExcel();
+    static ConvertirDOM dom = new ConvertirDOM();
+    
+//PRACTICA 3
+    //LLAMADAS
     static GeneradorIBAN iban = new GeneradorIBAN();
-    static ArrayList<String> cuentasBancarias = new ArrayList<String>();
-    static ArrayList<String> nacion = new ArrayList<String>();
-    static ArrayList<String> ibanCorrecto = new ArrayList<String>();
+    static GeneradorEmail email = new GeneradorEmail();
+    
+    //LISTAS
+    static ArrayList<Objeto> trabajadores = new ArrayList<Objeto>();
+    static ArrayList<Objeto> ibanCorrecto = new ArrayList<Objeto>();
+    static ArrayList<Objeto> emailCompleto = new ArrayList<Objeto>();
+    
     
     
     public static void main(String[] args) throws ParserConfigurationException, TransformerException 
     {
-        // TODO code application logic here
         
-        //PRACTICA 1
+    //PRACTICA 1
         /*System.out.println("Introduzca un DNI:");
         Scanner sc = new Scanner(System.in);
         String dni = sc.next();
@@ -59,11 +62,11 @@ public class Principal
             System.out.println("ERROR");
         }*/
         
-        //PRACTICA 2
-        /*
+    //PRACTICA 2
+       
        //APERTURA DEL OBJETO
        File fileExcel = new File("resources/SistemasInformacionII.xlsx");
-       
+       /*
        //LLAMADAS
        listDNI = read.primeraLectura(fileExcel);
        id = correct.corregirDniPosicion(listDNI);
@@ -74,13 +77,26 @@ public class Principal
        dom.crearDOM(listErroneos);
        System.out.println("Fichero xml creado");*/
  
-        //PRACTICA 3
-        File fileExcel = new File("resources/SistemasInformacionII.xlsx");
-        cuentasBancarias = read.devuelveCuenta(fileExcel);
-        nacion = read.devuelveNacion(fileExcel);
-        ibanCorrecto = iban.geneararIban(cuentasBancarias,nacion);
+    //PRACTICA 3
 
         
+        //IBAN CALCULADO
+        trabajadores = read.devuelveTodo(fileExcel);
+        ibanCorrecto = iban.geneararIban(trabajadores);
+        
+        
+        
+        //EMAIL
+
+        emailCompleto = email.generarEmail(trabajadores);
+  
+        /*for(Objeto i: emailCompleto)
+        {
+           System.out.println(i.getEmail());
+        }*/
+        
+        read.escribirIbanEmail(fileExcel, emailCompleto);
+
     }
     
     

@@ -19,51 +19,14 @@ public class GeneradorIBAN
     static ArrayList<String> nacionInt = new ArrayList<String>();
     static ArrayList<BigInteger> ibanInt = new ArrayList<BigInteger>();
     static ArrayList<Integer> restoMod97 = new ArrayList<Integer>();
+    static ArrayList<String> completo = new ArrayList<String>();
+    static ArrayList<String> comprobar = new ArrayList<String>();
     
     
-    public ArrayList<String> geneararIban(ArrayList<String> cuentasBancarias,ArrayList<String> nacion)
+    public ArrayList<Objeto> geneararIban(ArrayList<Objeto> cuentasBancarias)
     {
-     
-            char letra1;
-        char letra2;
-      
-        for(String naInt: nacion)
-        {
-            letra1 = naInt.charAt(0);
-            letra2 = naInt.charAt(1);
-            nacionInt.add("" + convertirLetra(letra1) + convertirLetra(letra2));
-            
-        }
-        
-        for(String n: cuentasBancarias)
-        {
-            for(String nac:nacionInt)
-            {
-                ibanCompleto.add(n + nac + "00");
-             
-            }
-        }
-        BigInteger resto;
-        int resto2;
-        int cont = 0;
-        
-        
-        
-        for(String i: ibanCompleto)
-        {
 
-            BigInteger intConvertiodo= new BigInteger(i);
-            ibanInt.add(intConvertiodo);
-            resto = ibanInt.get(0).divide(BigInteger.valueOf(97));
-            cont++;
-            resto2 = resto.intValue();
-            resto2 = 98 - resto2;
-            restoMod97.add(resto2);
-
-        }
-
- 
-        return null;
+        return cuentasBancarias;
     }
     
     private int convertirLetra(char letra)
