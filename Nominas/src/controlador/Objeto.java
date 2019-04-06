@@ -10,6 +10,7 @@ public class Objeto
     String categoria;
     String cuenta;
     String iban;
+    //CuentasBancarias iban; //quizas pueda ser una solucion ;_;
     String nacion;
     String email;
     
