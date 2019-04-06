@@ -39,7 +39,7 @@ public class LeerExcel
    //LLAMADAS
    static Objeto obj = new Objeto();
    
-    
+    //GUARDA EN UN OBJETO TODOS LOS DATOS NECESARIOS
     public ArrayList<Objeto> devuelveTodo (File fileExcel)
     {  
         try 
@@ -50,7 +50,7 @@ public class LeerExcel
             filas = leerFilCoum.getLastRowNum();
             colum = 0;  
             
-            for (int r = 0; r < filas +1; r++) 
+            for (int r = 1; r < filas +1; r++) 
             {
                 obj = new Objeto();
                 valorCelda = leerFilCoum.getRow(r);
@@ -80,6 +80,9 @@ public class LeerExcel
                                 break;
                             case 6:
                                 obj.setNombreEmpre(stringValorCelda);
+                                break;
+                            case 9:
+                                obj.setCategoria(stringValorCelda);
                                 break;
                             case 10:
                                 obj.setCuenta(stringValorCelda);
@@ -118,7 +121,7 @@ public class LeerExcel
         return iban;
     }
 
-    
+    //ESCRIBE EN EL EXCEL EL EMAIL Y EL IBAN
     public void escribirIbanEmail(File fileExcel,ArrayList<Objeto> emailCompleto)
     {
      try 
@@ -146,7 +149,7 @@ public class LeerExcel
                     }
                     else
                     {
-                        for (int c = 0; c < (colum = valorCelda.getLastCellNum()); c++) 
+                        for(int c = 0; c <= (colum = valorCelda.getLastCellNum()); c++) 
                         {
                             //SE COGE SOLO LA 3 COLUMNA DONDE ESTA EL DNI, PARA PROCESAR SOLO ESOS DATOS
                             if(c == 5 && r > 0)
@@ -160,6 +163,28 @@ public class LeerExcel
                                }catch(Exception e)
                                {}
 
+                            }
+                            if(c == 10 && r > 0)
+                            {
+                               stringValorCelda = valorCelda.getCell(c) == null?"":(valorCelda.getCell(c).getCellType() == CellType.STRING)?valorCelda.getCell(c).getStringCellValue():(valorCelda.getCell(c).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(c).getNumericCellValue():(valorCelda.getCell(c).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(c).getBooleanCellValue():(valorCelda.getCell(c).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(c).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(c).getCellType() == CellType.ERROR)?"ERROR":"";
+
+                               leerFilCoum.getRow(r).createCell(c).setCellValue(obj.getCuenta());
+
+                               try (FileOutputStream ficheroCambiado = new FileOutputStream(new File("resources/SistemasInformacionII.xlsx"))) {
+                                                parametro.write(ficheroCambiado);
+                               }catch(Exception e)
+                               {} 
+                            }
+                            if(c == 12 && r > 0)
+                            {
+                               stringValorCelda = valorCelda.getCell(c) == null?"":(valorCelda.getCell(c).getCellType() == CellType.STRING)?valorCelda.getCell(c).getStringCellValue():(valorCelda.getCell(c).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(c).getNumericCellValue():(valorCelda.getCell(c).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(c).getBooleanCellValue():(valorCelda.getCell(c).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(c).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(c).getCellType() == CellType.ERROR)?"ERROR":"";
+                               
+                               leerFilCoum.getRow(r).createCell(c).setCellValue(obj.getIban());
+
+                               try (FileOutputStream ficheroCambiado = new FileOutputStream(new File("resources/SistemasInformacionII.xlsx"))) {
+                                                parametro.write(ficheroCambiado);
+                               }catch(Exception e)
+                               {} 
                             }
                         }
                     }
@@ -188,6 +213,7 @@ public class LeerExcel
         }
     }
     
+    //HACE UNA PRIMEARA APERTURA DEL ARCHIVO EXCEL Y DEVUELTE UN ARRAYLIST<OBJETO>(LISTA DE TRABAJADORES)
     public ArrayList<String> primeraLectura(File fileExcel)
     {  
         try 

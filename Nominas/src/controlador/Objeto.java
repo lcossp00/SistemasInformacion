@@ -10,9 +10,18 @@ public class Objeto
     String categoria;
     String cuenta;
     String iban;
-    //CuentasBancarias iban; //quizas pueda ser una solucion ;_;
     String nacion;
     String email;
+    String cuentaErronea;
+    
+    public String getcuentaErronea()
+    {
+        return this.cuentaErronea;
+    }
+    public void setcuentaErronea(String cuentaErronea)
+    {
+        this.cuentaErronea = cuentaErronea;
+    }
     
     public String getEmail()
     {

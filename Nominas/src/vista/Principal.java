@@ -23,7 +23,7 @@ public class Principal
     static ArrayList<Integer> id = new ArrayList<Integer>();
     static ArrayList<String> listCorrect = new ArrayList<String>();
     static ArrayList<Integer> idPos = new ArrayList<Integer>();
-     static ArrayList<Objeto> listErroneos = new ArrayList<Objeto>();
+    static ArrayList<Objeto> listErroneos = new ArrayList<Objeto>();
     //LLAMADAS
     static LeerExcel read = new LeerExcel();
     static Corregir correct = new Corregir();
@@ -38,6 +38,7 @@ public class Principal
     static ArrayList<Objeto> trabajadores = new ArrayList<Objeto>();
     static ArrayList<Objeto> ibanCorrecto = new ArrayList<Objeto>();
     static ArrayList<Objeto> emailCompleto = new ArrayList<Objeto>();
+
     
     
     
@@ -66,7 +67,7 @@ public class Principal
        
        //APERTURA DEL OBJETO
        File fileExcel = new File("resources/SistemasInformacionII.xlsx");
-       /*
+       
        //LLAMADAS
        listDNI = read.primeraLectura(fileExcel);
        id = correct.corregirDniPosicion(listDNI);
@@ -75,7 +76,7 @@ public class Principal
        listErroneos = read.segundaLectura(fileExcel, listCorrect, idPos);
        System.out.println("Fichero renovado con los correctos");
        dom.crearDOM(listErroneos);
-       System.out.println("Fichero xml creado");*/
+       System.out.println("Fichero xml creado");
  
     //PRACTICA 3
 
@@ -87,15 +88,9 @@ public class Principal
         
         
         //EMAIL
-
-        emailCompleto = email.generarEmail(trabajadores);
-  
-        /*for(Objeto i: emailCompleto)
-        {
-           System.out.println(i.getEmail());
-        }*/
-        
+        emailCompleto = email.generarEmail(ibanCorrecto);
         read.escribirIbanEmail(fileExcel, emailCompleto);
+        dom.crearDOMIban(emailCompleto);
 
     }
     

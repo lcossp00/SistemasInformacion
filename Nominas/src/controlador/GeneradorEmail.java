@@ -26,15 +26,10 @@ public class GeneradorEmail
         }
         
         //CREAMOS LA PRIMERA PARTE DEL EMAIL
-        for(String i : nombre)
-        {
-          email.add(i.toLowerCase().charAt(0) + "");
-        }
-        
         for(String j : apellido1)
         { 
-          email.set(count, email.get(count) + j.toLowerCase().charAt(0)); 
-          count++;
+          email.add(j.toLowerCase().charAt(0) + ""); 
+          
         }
         
         count = 0;
@@ -48,6 +43,13 @@ public class GeneradorEmail
           {
              email.set(count, email.get(count) + n.toLowerCase().charAt(0)); 
           } 
+          count++;
+        }
+        
+        count = 0;
+        for(String i : nombre)
+        {
+          email.set(count, email.get(count) + i.toLowerCase().charAt(0));
           count++;
         }
 

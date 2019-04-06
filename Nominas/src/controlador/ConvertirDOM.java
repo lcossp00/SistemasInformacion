@@ -18,33 +18,16 @@ import org.w3c.dom.Element;
 public class ConvertirDOM 
 {
    //VARIABLES
-    static String fileErroneos = "resources/SistemasInformacionIIErroneos.xml";
-    
-    //DOCUMENT
-    static DocumentBuilderFactory documentF;
-    static DocumentBuilder documentB;
-    Document document;
-    static Element empleado;
-    static Element nombreTrabajador;
-    static Element apellidoPrimero;
-    static Element apellidoSegundo;
-    static Element categoria;
-    static Element empresa;
-    
-    //TRANFORMAR DOM A XML
-    static TransformerFactory transformerFactory;
-    static Transformer transformer; 
-    static DOMSource domSource;
-    static StreamResult streamResult;
-    
-    Attr attr;
-            
+    static String fileErroneos = "resources/erroneos.xml";
+    static String fileErroneosCCC = "resources/erroneosCCC.xml";
+
+     //CREA EL XML DE DNI       
     public void crearDOM(ArrayList<Objeto> listErroneos) throws ParserConfigurationException, TransformerException
     {
         //DOCUMENT
-        documentF = DocumentBuilderFactory.newInstance();
-        documentB = documentF.newDocumentBuilder();
-        document = documentB.newDocument();
+        DocumentBuilderFactory documentF = DocumentBuilderFactory.newInstance();
+        DocumentBuilder documentB = documentF.newDocumentBuilder();
+        Document document = documentB.newDocument();
         Element root = document.createElement("Trabajadores");
         document.appendChild(root);
  
@@ -52,17 +35,17 @@ public class ConvertirDOM
             {
               if(null != t.getNombreTrabajador())
               { 
-                empleado = document.createElement("Trabajador");
+                Element empleado = document.createElement("Trabajador");
                 root.appendChild(empleado);
-                attr = document.createAttribute("Id");
+                Attr attr = document.createAttribute("Id");
                 attr.setValue(t.getPos());
                 
                 //ETIQUETAS
-                nombreTrabajador = document.createElement("Nombre_Trabajador");
-                apellidoPrimero = document.createElement("Primer_Apellido");
-                apellidoSegundo = document.createElement("Segundo_Apellido");
-                empresa = document.createElement("Nombre_Empresa");
-                categoria = document.createElement("Categoria");
+                Element nombreTrabajador = document.createElement("Nombre_Trabajador");
+                Element apellidoPrimero = document.createElement("Primer_Apellido");
+                Element apellidoSegundo = document.createElement("Segundo_Apellido");
+                Element empresa = document.createElement("Nombre_Empresa");
+                Element categoria = document.createElement("Categoria");
                 
                 //VALORES DE LAS ETIQUETAS
                 empleado.setAttributeNode(attr);
@@ -91,10 +74,84 @@ public class ConvertirDOM
             }
 
             //TRANFORMACION A XML
-            transformerFactory = TransformerFactory.newInstance();
-            transformer = transformerFactory.newTransformer();
-            domSource = new DOMSource(document);
-            streamResult = new StreamResult(new File(fileErroneos));
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource domSource = new DOMSource(document);
+            StreamResult streamResult = new StreamResult(new File(fileErroneos));
+            transformer.transform(domSource, streamResult);
+                
+    }
+    
+    //CREA EL XML DE IBAN
+    public void crearDOMIban(ArrayList<Objeto> listErroneos) throws ParserConfigurationException, TransformerException
+    {
+        //DOCUMENT
+        DocumentBuilderFactory documentF = DocumentBuilderFactory.newInstance();
+        DocumentBuilder documentB = documentF.newDocumentBuilder();
+        Document document = documentB.newDocument();
+        Element root = document.createElement("Trabajadores");
+        document.appendChild(root);
+ 
+            for(Objeto t:listErroneos)
+            {
+              if(t.getcuentaErronea() != null)
+              {
+                Element empleado = document.createElement("Trabajador");
+                root.appendChild(empleado);
+                Attr attr = document.createAttribute("Id");
+                attr.setValue(t.getPos());
+                
+                //ETIQUETAS
+                Element nombreTrabajador = document.createElement("Nombre_Trabajador");
+                Element apellidoPrimero = document.createElement("Primer_Apellido");
+                Element apellidoSegundo = document.createElement("Segundo_Apellido");
+                Element empresa = document.createElement("Nombre_Empresa");
+                Element categoria = document.createElement("Categoria");
+                Element cuentaErronea = document.createElement("CuentaErronea");
+                Element iban = document.createElement("IBAN");
+                
+                //VALORES DE LAS ETIQUETAS
+                empleado.setAttributeNode(attr);
+                
+                //NOMBRE DEL TRABAJADOR
+                nombreTrabajador.appendChild(document.createTextNode(t.getNombreTrabajador()));
+                empleado.appendChild(nombreTrabajador);
+
+                //PRIMER APELLIDO
+                apellidoPrimero.appendChild(document.createTextNode(t.getPrimerApell()));
+                empleado.appendChild(apellidoPrimero);
+
+                //SEGUNDO APELLIDO
+                if(t.getSegApell() != null)
+                {
+                    apellidoSegundo.appendChild(document.createTextNode(t.getSegApell()));
+                    empleado.appendChild(apellidoSegundo);
+                }
+
+                //NOMBRE DE LA EMPRESA
+                empresa.appendChild(document.createTextNode(t.getNombreEmpre()));
+                empleado.appendChild(empresa);
+
+                //CATEGORIA EN LA QUE SE ENCUENTRA EL TRABAJADOR
+                categoria.appendChild(document.createTextNode(t.getCategoria()));
+                empleado.appendChild(categoria);
+                
+                //CATEGORIA EN LA QUE SE ENCUENTRA EL TRABAJADOR
+                cuentaErronea.appendChild(document.createTextNode(t.getcuentaErronea()));
+                empleado.appendChild(cuentaErronea);
+                
+                //IBAN DEL TRABAJADOR
+                iban.appendChild(document.createTextNode(t.getIban()));
+                empleado.appendChild(iban);
+              }
+                
+            }
+
+            //TRANFORMACION A XML
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource domSource = new DOMSource(document);
+            StreamResult streamResult = new StreamResult(new File(fileErroneosCCC));
             transformer.transform(domSource, streamResult);
                 
     }
