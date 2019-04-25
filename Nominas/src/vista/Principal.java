@@ -38,6 +38,8 @@ public class Principal
     static ArrayList<Objeto> trabajadores = new ArrayList<Objeto>();
     static ArrayList<Objeto> ibanCorrecto = new ArrayList<Objeto>();
     static ArrayList<Objeto> emailCompleto = new ArrayList<Objeto>();
+//PRACTICA 4
+    
 
     
     
@@ -91,6 +93,10 @@ public class Principal
         emailCompleto = email.generarEmail(ibanCorrecto);
         read.escribirIbanEmail(fileExcel, emailCompleto);
         dom.crearDOMIban(emailCompleto);
+        
+    //PRACTICA 4
+        read.devuelveTodoHoja2(fileExcel);
+        
 
     }
     

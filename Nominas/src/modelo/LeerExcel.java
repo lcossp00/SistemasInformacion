@@ -2,6 +2,7 @@
 package modelo;
 
 import controlador.Objeto;
+import controlador.ObjetoHoja2;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -35,6 +36,23 @@ public class LeerExcel
    static InputStream inputExcel = null;
    static ArrayList<Objeto> iban = new ArrayList<Objeto>();
    static ArrayList<String> listDNI = new ArrayList<String>();
+   static ArrayList<Objeto> salarios = new ArrayList<Objeto>();
+   
+   //Practica 4
+    static ArrayList<String> categoria = new ArrayList<String>();
+    static ArrayList<String> salarioBase = new ArrayList<String>();
+    static ArrayList<String> complementos = new ArrayList<String>();
+    
+    static ArrayList<String> brutoAnual = new ArrayList<String>();
+    static ArrayList<String> retencion = new ArrayList<String>();
+    
+    static ArrayList<String> cuotas = new ArrayList<String>();
+    static ArrayList<String> nombreCuotas = new ArrayList<String>();
+    
+    static ArrayList<String> numeroTrienios = new ArrayList<String>();
+    static ArrayList<String> importeBruto = new ArrayList<String>();
+   
+
 
    //LLAMADAS
    static Objeto obj = new Objeto();
@@ -119,6 +137,207 @@ public class LeerExcel
             }
         }
         return iban;
+    }
+    
+    
+    //DEVUELVE EL CONTENIDO DE LA HOJA DOS DE EXCEL Practica 4
+    public void devuelveTodoHoja2 (File fileExcel)
+    {  
+        try 
+        {
+            inputExcel = new FileInputStream(fileExcel);
+            XSSFWorkbook parametro = new XSSFWorkbook(inputExcel);
+            XSSFSheet leerFilCoum = parametro.getSheetAt(1);                       
+            filas = leerFilCoum.getLastRowNum();
+            colum = 0; 
+            ObjetoHoja2 obj2;
+            
+            //LEER SALARIO BASE Y COMPLEMENTOS
+            for (int r = 1; r < 14; r++) 
+            {
+                obj2 = new ObjetoHoja2();
+                valorCelda = leerFilCoum.getRow(r);
+               
+                if (valorCelda == null)
+                {
+                    //SI NO EXISTE VALOR EN ESA CELDA NO SE RECORRERA
+                    break;
+                }
+                else
+                {
+                    for (int c = 0; c <= 2; c++) 
+                    {
+                         
+                        stringValorCelda = valorCelda.getCell(c) == null?"":(valorCelda.getCell(c).getCellType() == CellType.STRING)?valorCelda.getCell(c).getStringCellValue():(valorCelda.getCell(c).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(c).getNumericCellValue():(valorCelda.getCell(c).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(c).getBooleanCellValue():(valorCelda.getCell(c).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(c).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(c).getCellType() == CellType.ERROR)?"ERROR":"";
+                        pos = r + "";
+                        obj.setPos(pos);
+                        switch(c)
+                        {
+                            case 0:
+                                categoria.add(stringValorCelda);
+                                //Deduzco que la siquiente linea es erronea, asi como las de los otros case
+                                //obj2.setCategoria(stringValorCelda);
+                              break;
+                                
+                            case 1:
+                                salarioBase.add(stringValorCelda);
+                               // obj2.setsalarioBase(stringValorCelda);
+                                break;
+                            case 2:
+                                complementos.add(stringValorCelda);
+                              //  obj2.setcomplementos(stringValorCelda);
+                                break;
+                              
+                        }
+                       
+                    }
+                }
+                salarios.add(obj);
+           
+            }
+             for(int y=0; y<categoria.size(); y++){
+              System.out.print(categoria.get(y)+" ");
+              }
+            System.out.print("\n");
+              for(int y=0; y<salarioBase.size(); y++){
+              System.out.print(salarioBase.get(y)+" ");
+              }
+            System.out.print("\n");  
+            for(int y=0; y<complementos.size(); y++){
+              System.out.print(complementos.get(y)+" ");
+              }
+            System.out.print("\n");
+            //LEER CUOTAS
+              for (int p = 17; p <= 24; p++) 
+                {
+                    valorCelda = leerFilCoum.getRow(p);
+                    if (valorCelda == null)
+                     {
+                        //SI NO EXISTE VALOR EN ESA CELDA NO SE RECORRERA
+                        break;
+                    }else{
+                        for (int c = 0; c <= 1; c++)
+                        {
+                            stringValorCelda = valorCelda.getCell(c) == null?"":(valorCelda.getCell(c).getCellType() == CellType.STRING)?valorCelda.getCell(c).getStringCellValue():(valorCelda.getCell(c).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(c).getNumericCellValue():(valorCelda.getCell(c).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(c).getBooleanCellValue():(valorCelda.getCell(c).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(c).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(c).getCellType() == CellType.ERROR)?"ERROR":"";
+                            pos = p + "";
+                            obj.setPos(pos);
+                            switch(c)
+                            {
+                                case 0:
+                                    nombreCuotas.add(stringValorCelda);
+                                    
+                                    break;
+                                case 1:
+                                    cuotas.add(stringValorCelda);
+                                   
+                                    break;
+                                 
+                            }
+                        }
+                    }
+                }
+              for(int y=0; y<8; y++){
+              System.out.print(nombreCuotas.get(y)+" ");
+              }
+              System.out.print("\n");
+              //LEER NUMERO DE TRIENIO E IMPORTE BRUTO
+            for (int p = 18; p <= 35 ; p++) 
+                {
+                    valorCelda = leerFilCoum.getRow(p);
+                    if (valorCelda == null)
+                     {
+                        //SI NO EXISTE VALOR EN ESA CELDA NO SE RECORRERA
+                        break;
+                    }else{
+                        for (int c = 2; c <= 3; c++)
+                        {
+                            stringValorCelda = valorCelda.getCell(c) == null?"":(valorCelda.getCell(c).getCellType() == CellType.STRING)?valorCelda.getCell(c).getStringCellValue():(valorCelda.getCell(c).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(c).getNumericCellValue():(valorCelda.getCell(c).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(c).getBooleanCellValue():(valorCelda.getCell(c).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(c).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(c).getCellType() == CellType.ERROR)?"ERROR":"";
+                            pos = p + "";
+                            obj.setPos(pos);
+                            switch(c)
+                            {
+                                case 2:
+                                    numeroTrienios.add(stringValorCelda);
+                                    
+                                    break;
+                                case 3:
+                                    importeBruto.add(stringValorCelda);
+                                   
+                                    break;
+                                 
+                            }
+                        }
+                    }
+                }
+            for(int y=0; y<numeroTrienios.size(); y++){
+              System.out.print(numeroTrienios.get(y)+" ");
+              }
+            System.out.print("\n");
+            for(int y=0; y<importeBruto.size(); y++){
+              System.out.print(importeBruto.get(y)+"");
+              }
+            System.out.print("\n");
+
+            //LEER BRUTO ANUAL Y RETENCION
+            for (int p = 1; p <= 49 ; p++) 
+                {
+                    valorCelda = leerFilCoum.getRow(p);
+                    if (valorCelda == null)
+                     {
+                        //SI NO EXISTE VALOR EN ESA CELDA NO SE RECORRERA
+                        break;
+                    }else{
+                        for (int c = 5; c <= 6; c++)
+                        {
+                            stringValorCelda = valorCelda.getCell(c) == null?"":(valorCelda.getCell(c).getCellType() == CellType.STRING)?valorCelda.getCell(c).getStringCellValue():(valorCelda.getCell(c).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(c).getNumericCellValue():(valorCelda.getCell(c).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(c).getBooleanCellValue():(valorCelda.getCell(c).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(c).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(c).getCellType() == CellType.ERROR)?"ERROR":"";
+                            pos = p + "";
+                            obj.setPos(pos);
+                            switch(c)
+                            {
+                                case 5:
+                                    brutoAnual.add(stringValorCelda);
+                                    
+                                    break;
+                                case 6:
+                                    retencion.add(stringValorCelda);
+                                   
+                                    break;
+                                 
+                            }
+                        }
+                    }
+                }
+            System.out.print("\n"+"bruto anual"+"\n");
+            for(int y=0; y<brutoAnual.size(); y++){
+              System.out.print(brutoAnual.get(y)+" ");
+              }
+            System.out.print("\n"+"Retencion"+"\n");
+            for(int y=0; y<retencion.size(); y++){
+              System.out.print(retencion.get(y)+" ");
+              }
+            System.out.print("\n");
+        } 
+        
+        catch (FileNotFoundException notFound) 
+        {
+            System.out.println("El fichero no fue encontrado: " + notFound);
+        } 
+        catch (IOException process) 
+        {
+            System.out.println("Error al procesarlo: " + process);
+        } 
+        finally 
+        {
+            try 
+            {
+                inputExcel.close();
+            } 
+            catch (IOException close) 
+            {
+                System.out.println("Error al cerrar el fichero: " + close);
+            }
+        }
+       
     }
 
     //ESCRIBE EN EL EXCEL EL EMAIL Y EL IBAN

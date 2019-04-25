@@ -13,6 +13,13 @@ public class Objeto
     String nacion;
     String email;
     String cuentaErronea;
+    //Practica 4
+    String salarioBase;
+    String complementos;
+    String numTrienios;
+    String importeBruto;
+    String brutoAnual;
+    String retencion;
     
     public String getcuentaErronea()
     {
@@ -110,7 +117,40 @@ public class Objeto
     public void setCategoria(String categoria)
     {
         this.categoria = categoria;
+        //puede que aqui se calcule el salrio base y los completmetnos
     }
      
+    //Practica 4
+    public String getSalarioBase()
+    {
+        return this.salarioBase;
+    }
+     public String getComplementos()
+    {
+        return this.complementos;
+    }
+     
+    public void setBrutoAnual(String brutoAnual)
+    {
+        this.brutoAnual = brutoAnual;
+        //puede que aqui se calcule el salrio base y los completmetnos
+    }
+    public String getBrutoAnual()
+    {
+        return this.salarioBase;
+    }
+    public String getRetencion(){
+        return this.retencion;
+    }
+    
+    public void setTrienios(String numTrienios){
+        this.numTrienios = numTrienios;
+    }
+    public String getTrienios(){
+        return this.numTrienios;
+    }
+    public String getImporteBruto(){
+        return this.importeBruto;
+    }
 }
 
