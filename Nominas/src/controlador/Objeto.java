@@ -14,12 +14,9 @@ public class Objeto
     String email;
     String cuentaErronea;
     //Practica 4
-    String salarioBase;
-    String complementos;
-    String numTrienios;
-    String importeBruto;
-    String brutoAnual;
-    String retencion;
+    String fechaAlta;
+    String prorrata;
+
     
     public String getcuentaErronea()
     {
@@ -121,36 +118,24 @@ public class Objeto
     }
      
     //Practica 4
-    public String getSalarioBase()
+    
+    public String getFechaAlta()
     {
-        return this.salarioBase;
+        return this.fechaAlta;
     }
-     public String getComplementos()
+    public void setFechaAlta(String fechaAlta)
     {
-        return this.complementos;
-    }
-     
-    public void setBrutoAnual(String brutoAnual)
-    {
-        this.brutoAnual = brutoAnual;
-        //puede que aqui se calcule el salrio base y los completmetnos
-    }
-    public String getBrutoAnual()
-    {
-        return this.salarioBase;
-    }
-    public String getRetencion(){
-        return this.retencion;
+        this.fechaAlta = fechaAlta;
     }
     
-    public void setTrienios(String numTrienios){
-        this.numTrienios = numTrienios;
+    public String getProrrata()
+    {
+        return this.prorrata;
     }
-    public String getTrienios(){
-        return this.numTrienios;
+    public void setProrrata(String prorrata)
+    {
+        this.prorrata = prorrata;
     }
-    public String getImporteBruto(){
-        return this.importeBruto;
-    }
+
 }
 

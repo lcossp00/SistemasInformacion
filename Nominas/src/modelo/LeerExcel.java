@@ -2,7 +2,11 @@
 package modelo;
 
 import controlador.Objeto;
-import controlador.ObjetoHoja2;
+import controlador.ObjetoBrutoAnual;
+import controlador.ObjetoCategorias;
+import controlador.ObjetoCuotas;
+import controlador.ObjetoTrineos;
+import controlador.ValoresEstaticos;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -86,7 +90,8 @@ public class LeerExcel
                         stringValorCelda = valorCelda.getCell(c) == null?"":(valorCelda.getCell(c).getCellType() == CellType.STRING)?valorCelda.getCell(c).getStringCellValue():(valorCelda.getCell(c).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(c).getNumericCellValue():(valorCelda.getCell(c).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(c).getBooleanCellValue():(valorCelda.getCell(c).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(c).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(c).getCellType() == CellType.ERROR)?"ERROR":"";
                         pos = r + "";
                         obj.setPos(pos);
-                        switch(c){
+                        switch(c)
+                        {
                             case 0:
                                 obj.setNombreTrabajador(stringValorCelda);
                                 break;
@@ -108,6 +113,10 @@ public class LeerExcel
                             case 11:
                                 obj.setNacion(stringValorCelda);
                                 break;
+                            case 4:
+                                obj.setFechaAlta(stringValorCelda);
+                            case 8:
+                                obj.setProrrata(stringValorCelda);
                         }
                        
                     }
@@ -149,15 +158,13 @@ public class LeerExcel
             XSSFWorkbook parametro = new XSSFWorkbook(inputExcel);
             XSSFSheet leerFilCoum = parametro.getSheetAt(1);                       
             filas = leerFilCoum.getLastRowNum();
-            colum = 0; 
-            ObjetoHoja2 obj2;
+            colum = 0;  
             
-            //LEER SALARIO BASE Y COMPLEMENTOS
-            for (int r = 1; r < 14; r++) 
+            //RECORRE LAS FILAS 2-50 Y COGE TODO LOS VALORES BRUTO Y LAS RETENCIONES
+            for (int r = 1; r < 50 ; r++) 
             {
-                obj2 = new ObjetoHoja2();
                 valorCelda = leerFilCoum.getRow(r);
-               
+                ObjetoBrutoAnual bruto = new ObjetoBrutoAnual();
                 if (valorCelda == null)
                 {
                     //SI NO EXISTE VALOR EN ESA CELDA NO SE RECORRERA
@@ -165,159 +172,113 @@ public class LeerExcel
                 }
                 else
                 {
-                    for (int c = 0; c <= 2; c++) 
-                    {
-                         
-                        stringValorCelda = valorCelda.getCell(c) == null?"":(valorCelda.getCell(c).getCellType() == CellType.STRING)?valorCelda.getCell(c).getStringCellValue():(valorCelda.getCell(c).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(c).getNumericCellValue():(valorCelda.getCell(c).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(c).getBooleanCellValue():(valorCelda.getCell(c).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(c).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(c).getCellType() == CellType.ERROR)?"ERROR":"";
-                        pos = r + "";
-                        obj.setPos(pos);
-                        switch(c)
-                        {
-                            case 0:
-                                categoria.add(stringValorCelda);
-                                //Deduzco que la siquiente linea es erronea, asi como las de los otros case
-                                //obj2.setCategoria(stringValorCelda);
-                              break;
-                                
-                            case 1:
-                                salarioBase.add(stringValorCelda);
-                               // obj2.setsalarioBase(stringValorCelda);
-                                break;
-                            case 2:
-                                complementos.add(stringValorCelda);
-                              //  obj2.setcomplementos(stringValorCelda);
-                                break;
-                              
-                        }
-                       
-                    }
+ 
+                    stringValorCelda = valorCelda.getCell(5) == null?"":(valorCelda.getCell(5).getCellType() == CellType.STRING)?valorCelda.getCell(5).getStringCellValue():(valorCelda.getCell(5).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(5).getNumericCellValue():(valorCelda.getCell(5).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(5).getBooleanCellValue():(valorCelda.getCell(5).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(5).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(5).getCellType() == CellType.ERROR)?"ERROR":"";
+                    bruto.setBrutoAnual(stringValorCelda);
+                    stringValorCelda = valorCelda.getCell(6) == null?"":(valorCelda.getCell(6).getCellType() == CellType.STRING)?valorCelda.getCell(6).getStringCellValue():(valorCelda.getCell(6).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(6).getNumericCellValue():(valorCelda.getCell(6).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(6).getBooleanCellValue():(valorCelda.getCell(6).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(6).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(6).getCellType() == CellType.ERROR)?"ERROR":"";   
+                    bruto.setRetencion(stringValorCelda); 
                 }
-                salarios.add(obj);
-           
+                ValoresEstaticos.brutoAnual.add(bruto);
             }
-             for(int y=0; y<categoria.size(); y++){
-              System.out.print(categoria.get(y)+" ");
-              }
-            System.out.print("\n");
-              for(int y=0; y<salarioBase.size(); y++){
-              System.out.print(salarioBase.get(y)+" ");
-              }
-            System.out.print("\n");  
-            for(int y=0; y<complementos.size(); y++){
-              System.out.print(complementos.get(y)+" ");
-              }
-            System.out.print("\n");
-            //LEER CUOTAS
-              for (int p = 17; p <= 24; p++) 
+            
+            //RECORREO LAS FILAS CATEGORIAS Y GUARDA LOS VALORES
+            for (int r = 1; r < 15 ; r++) 
+            {
+                valorCelda = leerFilCoum.getRow(r);
+                ObjetoCategorias categoria  = new ObjetoCategorias();
+                if (valorCelda == null)
                 {
-                    valorCelda = leerFilCoum.getRow(p);
-                    if (valorCelda == null)
-                     {
-                        //SI NO EXISTE VALOR EN ESA CELDA NO SE RECORRERA
-                        break;
-                    }else{
-                        for (int c = 0; c <= 1; c++)
-                        {
-                            stringValorCelda = valorCelda.getCell(c) == null?"":(valorCelda.getCell(c).getCellType() == CellType.STRING)?valorCelda.getCell(c).getStringCellValue():(valorCelda.getCell(c).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(c).getNumericCellValue():(valorCelda.getCell(c).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(c).getBooleanCellValue():(valorCelda.getCell(c).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(c).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(c).getCellType() == CellType.ERROR)?"ERROR":"";
-                            pos = p + "";
-                            obj.setPos(pos);
-                            switch(c)
-                            {
-                                case 0:
-                                    nombreCuotas.add(stringValorCelda);
-                                    
-                                    break;
-                                case 1:
-                                    cuotas.add(stringValorCelda);
-                                   
-                                    break;
-                                 
-                            }
-                        }
+                    //SI NO EXISTE VALOR EN ESA CELDA NO SE RECORRERA
+                    break;
+                }
+                else
+                {
+ 
+                    stringValorCelda = valorCelda.getCell(0) == null?"":(valorCelda.getCell(0).getCellType() == CellType.STRING)?valorCelda.getCell(0).getStringCellValue():(valorCelda.getCell(0).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(0).getNumericCellValue():(valorCelda.getCell(0).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(0).getBooleanCellValue():(valorCelda.getCell(0).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(0).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(0).getCellType() == CellType.ERROR)?"ERROR":"";
+                    categoria.setCategoria(stringValorCelda);
+                    stringValorCelda = valorCelda.getCell(1) == null?"":(valorCelda.getCell(1).getCellType() == CellType.STRING)?valorCelda.getCell(1).getStringCellValue():(valorCelda.getCell(1).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(1).getNumericCellValue():(valorCelda.getCell(1).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(1).getBooleanCellValue():(valorCelda.getCell(1).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(1).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(1).getCellType() == CellType.ERROR)?"ERROR":"";   
+                    categoria.setSalarioBase(stringValorCelda); 
+                    stringValorCelda = valorCelda.getCell(2) == null?"":(valorCelda.getCell(2).getCellType() == CellType.STRING)?valorCelda.getCell(2).getStringCellValue():(valorCelda.getCell(2).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(2).getNumericCellValue():(valorCelda.getCell(2).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(2).getBooleanCellValue():(valorCelda.getCell(2).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(2).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(2).getCellType() == CellType.ERROR)?"ERROR":"";   
+                    categoria.setComplementos(stringValorCelda);
+                }
+                 ValoresEstaticos.categorias.add(categoria);
+            }
+            
+            //Recorre Cuotas y guarda los valores
+            for (int r = 17; r < 25 ; r++) 
+            {
+                valorCelda = leerFilCoum.getRow(r);
+                if (valorCelda == null)
+                {
+                    //SI NO EXISTE VALOR EN ESA CELDA NO SE RECORRERA
+                    break;
+                }
+                else
+                {
+                    
+                    switch(r)
+                    {
+                            case 17:
+                                stringValorCelda = valorCelda.getCell(1) == null?"":(valorCelda.getCell(1).getCellType() == CellType.STRING)?valorCelda.getCell(1).getStringCellValue():(valorCelda.getCell(1).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(1).getNumericCellValue():(valorCelda.getCell(1).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(1).getBooleanCellValue():(valorCelda.getCell(1).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(1).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(1).getCellType() == CellType.ERROR)?"ERROR":"";   
+                                ValoresEstaticos.objcuotas.setObreroGeneralTrab(stringValorCelda);
+                                break;
+                            case 18:
+                                stringValorCelda = valorCelda.getCell(1) == null?"":(valorCelda.getCell(1).getCellType() == CellType.STRING)?valorCelda.getCell(1).getStringCellValue():(valorCelda.getCell(1).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(1).getNumericCellValue():(valorCelda.getCell(1).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(1).getBooleanCellValue():(valorCelda.getCell(1).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(1).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(1).getCellType() == CellType.ERROR)?"ERROR":"";   
+                                ValoresEstaticos.objcuotas.setDesempleoTrab(stringValorCelda); 
+                                break;
+                            case 19:
+                                stringValorCelda = valorCelda.getCell(1) == null?"":(valorCelda.getCell(1).getCellType() == CellType.STRING)?valorCelda.getCell(1).getStringCellValue():(valorCelda.getCell(1).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(1).getNumericCellValue():(valorCelda.getCell(1).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(1).getBooleanCellValue():(valorCelda.getCell(1).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(1).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(1).getCellType() == CellType.ERROR)?"ERROR":"";   
+                                ValoresEstaticos.objcuotas.setFormacionTrab(stringValorCelda);
+                                break;
+                            case 20:
+                                stringValorCelda = valorCelda.getCell(1) == null?"":(valorCelda.getCell(1).getCellType() == CellType.STRING)?valorCelda.getCell(1).getStringCellValue():(valorCelda.getCell(1).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(1).getNumericCellValue():(valorCelda.getCell(1).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(1).getBooleanCellValue():(valorCelda.getCell(1).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(1).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(1).getCellType() == CellType.ERROR)?"ERROR":"";   
+                                ValoresEstaticos.objcuotas.setContingenciasComunesEmpre(stringValorCelda);
+                                break;
+                            case 21:
+                                stringValorCelda = valorCelda.getCell(1) == null?"":(valorCelda.getCell(1).getCellType() == CellType.STRING)?valorCelda.getCell(1).getStringCellValue():(valorCelda.getCell(1).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(1).getNumericCellValue():(valorCelda.getCell(1).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(1).getBooleanCellValue():(valorCelda.getCell(1).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(1).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(1).getCellType() == CellType.ERROR)?"ERROR":"";   
+                                ValoresEstaticos.objcuotas.setFogosa(stringValorCelda);
+                                break;
+                            case 22:
+                                stringValorCelda = valorCelda.getCell(1) == null?"":(valorCelda.getCell(1).getCellType() == CellType.STRING)?valorCelda.getCell(1).getStringCellValue():(valorCelda.getCell(1).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(1).getNumericCellValue():(valorCelda.getCell(1).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(1).getBooleanCellValue():(valorCelda.getCell(1).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(1).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(1).getCellType() == CellType.ERROR)?"ERROR":"";   
+                                ValoresEstaticos.objcuotas.setDesempleoEmpre(stringValorCelda);
+                                break;
+                            case 23:
+                                stringValorCelda = valorCelda.getCell(1) == null?"":(valorCelda.getCell(1).getCellType() == CellType.STRING)?valorCelda.getCell(1).getStringCellValue():(valorCelda.getCell(1).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(1).getNumericCellValue():(valorCelda.getCell(1).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(1).getBooleanCellValue():(valorCelda.getCell(1).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(1).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(1).getCellType() == CellType.ERROR)?"ERROR":"";   
+                                ValoresEstaticos.objcuotas.setFormacionEmpre(stringValorCelda);
+                                break;
+                            case 24:
+                                stringValorCelda = valorCelda.getCell(1) == null?"":(valorCelda.getCell(1).getCellType() == CellType.STRING)?valorCelda.getCell(1).getStringCellValue():(valorCelda.getCell(1).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(1).getNumericCellValue():(valorCelda.getCell(1).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(1).getBooleanCellValue():(valorCelda.getCell(1).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(1).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(1).getCellType() == CellType.ERROR)?"ERROR":"";   
+                                ValoresEstaticos.objcuotas.setAccidentes(stringValorCelda);
+                                break;
                     }
                 }
-              for(int y=0; y<8; y++){
-              System.out.print(nombreCuotas.get(y)+" ");
-              }
-              System.out.print("\n");
-              //LEER NUMERO DE TRIENIO E IMPORTE BRUTO
-            for (int p = 18; p <= 35 ; p++) 
-                {
-                    valorCelda = leerFilCoum.getRow(p);
-                    if (valorCelda == null)
-                     {
-                        //SI NO EXISTE VALOR EN ESA CELDA NO SE RECORRERA
-                        break;
-                    }else{
-                        for (int c = 2; c <= 3; c++)
-                        {
-                            stringValorCelda = valorCelda.getCell(c) == null?"":(valorCelda.getCell(c).getCellType() == CellType.STRING)?valorCelda.getCell(c).getStringCellValue():(valorCelda.getCell(c).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(c).getNumericCellValue():(valorCelda.getCell(c).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(c).getBooleanCellValue():(valorCelda.getCell(c).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(c).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(c).getCellType() == CellType.ERROR)?"ERROR":"";
-                            pos = p + "";
-                            obj.setPos(pos);
-                            switch(c)
-                            {
-                                case 2:
-                                    numeroTrienios.add(stringValorCelda);
-                                    
-                                    break;
-                                case 3:
-                                    importeBruto.add(stringValorCelda);
-                                   
-                                    break;
-                                 
-                            }
-                        }
-                    }
-                }
-            for(int y=0; y<numeroTrienios.size(); y++){
-              System.out.print(numeroTrienios.get(y)+" ");
-              }
-            System.out.print("\n");
-            for(int y=0; y<importeBruto.size(); y++){
-              System.out.print(importeBruto.get(y)+"");
-              }
-            System.out.print("\n");
 
-            //LEER BRUTO ANUAL Y RETENCION
-            for (int p = 1; p <= 49 ; p++) 
+            }
+            
+            
+            //RECORRE TRINEOS
+            for (int r = 17; r < 36 ; r++) 
+            {
+                valorCelda = leerFilCoum.getRow(r);
+                ObjetoTrineos trineos  = new ObjetoTrineos();
+                if (valorCelda == null)
                 {
-                    valorCelda = leerFilCoum.getRow(p);
-                    if (valorCelda == null)
-                     {
-                        //SI NO EXISTE VALOR EN ESA CELDA NO SE RECORRERA
-                        break;
-                    }else{
-                        for (int c = 5; c <= 6; c++)
-                        {
-                            stringValorCelda = valorCelda.getCell(c) == null?"":(valorCelda.getCell(c).getCellType() == CellType.STRING)?valorCelda.getCell(c).getStringCellValue():(valorCelda.getCell(c).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(c).getNumericCellValue():(valorCelda.getCell(c).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(c).getBooleanCellValue():(valorCelda.getCell(c).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(c).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(c).getCellType() == CellType.ERROR)?"ERROR":"";
-                            pos = p + "";
-                            obj.setPos(pos);
-                            switch(c)
-                            {
-                                case 5:
-                                    brutoAnual.add(stringValorCelda);
-                                    
-                                    break;
-                                case 6:
-                                    retencion.add(stringValorCelda);
-                                   
-                                    break;
-                                 
-                            }
-                        }
-                    }
+                    //SI NO EXISTE VALOR EN ESA CELDA NO SE RECORRERA
+                    break;
                 }
-            System.out.print("\n"+"bruto anual"+"\n");
-            for(int y=0; y<brutoAnual.size(); y++){
-              System.out.print(brutoAnual.get(y)+" ");
-              }
-            System.out.print("\n"+"Retencion"+"\n");
-            for(int y=0; y<retencion.size(); y++){
-              System.out.print(retencion.get(y)+" ");
-              }
-            System.out.print("\n");
+                else
+                {
+ 
+                    stringValorCelda = valorCelda.getCell(2) == null?"":(valorCelda.getCell(2).getCellType() == CellType.STRING)?valorCelda.getCell(2).getStringCellValue():(valorCelda.getCell(2).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(2).getNumericCellValue():(valorCelda.getCell(2).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(2).getBooleanCellValue():(valorCelda.getCell(2).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(2).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(2).getCellType() == CellType.ERROR)?"ERROR":"";
+                    trineos.setImporteBruto(stringValorCelda);
+                    stringValorCelda = valorCelda.getCell(3) == null?"":(valorCelda.getCell(3).getCellType() == CellType.STRING)?valorCelda.getCell(3).getStringCellValue():(valorCelda.getCell(3).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(3).getNumericCellValue():(valorCelda.getCell(3).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(3).getBooleanCellValue():(valorCelda.getCell(3).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(3).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(3).getCellType() == CellType.ERROR)?"ERROR":"";   
+                    trineos.setNumTrineos(stringValorCelda); 
+                }
+                 ValoresEstaticos.trineos.add(trineos);
+            }
+            
+            
         } 
-        
         catch (FileNotFoundException notFound) 
         {
             System.out.println("El fichero no fue encontrado: " + notFound);
@@ -337,7 +298,7 @@ public class LeerExcel
                 System.out.println("Error al cerrar el fichero: " + close);
             }
         }
-       
+  
     }
 
     //ESCRIBE EN EL EXCEL EL EMAIL Y EL IBAN

@@ -5,6 +5,7 @@ import controlador.Corregir;
 import controlador.GeneradorEmail;
 import controlador.GeneradorIBAN;
 import controlador.Objeto;
+import controlador.NominaSinProrrata;
 import java.io.File;
 import java.util.ArrayList;
 import javax.xml.parsers.ParserConfigurationException;
@@ -97,6 +98,9 @@ public class Principal
     //PRACTICA 4
         read.devuelveTodoHoja2(fileExcel);
         
+        //REALIZAMOS LAS NOMINAS COMPLETAS 
+        NominaSinProrrata nsp = new NominaSinProrrata();
+        nsp.crearNominasSinProrrata(emailCompleto);
 
     }
     
