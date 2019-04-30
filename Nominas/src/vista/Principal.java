@@ -99,6 +99,7 @@ public class Principal
         read.devuelveTodoHoja2(fileExcel);
         
         //REALIZAMOS LAS NOMINAS COMPLETAS 
+        System.out.println("Introduzca una fecha(dd/mm/aaaa)");
         NominaSinProrrata nsp = new NominaSinProrrata();
         nsp.crearNominasSinProrrata(emailCompleto);
 
