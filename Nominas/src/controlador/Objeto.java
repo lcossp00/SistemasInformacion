@@ -14,8 +14,10 @@ public class Objeto
     String email;
     String cuentaErronea;
     //Practica 4
-    String fechaAlta;
+    Double fechaAlta;
     String prorrata;
+    int anio;
+    int mes;
 
     
     public String getcuentaErronea()
@@ -119,11 +121,11 @@ public class Objeto
      
     //Practica 4
     
-    public String getFechaAlta()
+    public Double getFechaAlta()
     {
         return this.fechaAlta;
     }
-    public void setFechaAlta(String fechaAlta)
+    public void setFechaAlta(Double fechaAlta)
     {
         this.fechaAlta = fechaAlta;
     }
@@ -135,6 +137,24 @@ public class Objeto
     public void setProrrata(String prorrata)
     {
         this.prorrata = prorrata;
+    }
+    
+    public int getAnio()
+    {
+        return this.anio;
+    }
+    public void setAnio(int anio)
+    {
+        this.anio = anio;
+    }
+    
+    public int getMes()
+    {
+        return this.mes;
+    }
+    public void setMes(int mes)
+    {
+        this.mes = mes;
     }
 
 }

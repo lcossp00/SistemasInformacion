@@ -6,8 +6,11 @@ import controlador.GeneradorEmail;
 import controlador.GeneradorIBAN;
 import controlador.Objeto;
 import controlador.NominaSinProrrata;
+import controlador.ValoresEstaticos;
 import java.io.File;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Scanner;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import modelo.LeerExcel;
@@ -45,7 +48,7 @@ public class Principal
     
     
     
-    public static void main(String[] args) throws ParserConfigurationException, TransformerException 
+    public static void main(String[] args) throws ParserConfigurationException, TransformerException, ParseException 
     {
         
     //PRACTICA 1
@@ -100,8 +103,16 @@ public class Principal
         
         //REALIZAMOS LAS NOMINAS COMPLETAS 
         System.out.println("Introduzca una fecha(dd/mm/aaaa)");
-        NominaSinProrrata nsp = new NominaSinProrrata();
-        nsp.crearNominasSinProrrata(emailCompleto);
+        Scanner sc = new Scanner(System.in);
+        String fecha = sc.nextLine();
+        ValoresEstaticos.mes = fecha.substring(3,5);
+        ValoresEstaticos.año = fecha.substring(6,10);
+        
+        /*Double value = 38930.0;
+        Date javaDate= DateUtil.getJavaDate((double)value);
+        System.out.println(new SimpleDateFormat("MM/dd/yyyy").format(javaDate));*/
+       NominaSinProrrata nsp = new NominaSinProrrata();
+       nsp.crearNominasSinProrrata(emailCompleto);
 
     }
     

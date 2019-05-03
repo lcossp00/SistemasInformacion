@@ -1,17 +1,44 @@
 package controlador;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import org.apache.poi.ss.usermodel.DateUtil;
 
 
 public class NominaSinProrrata
 {
-    public void crearNominasSinProrrata(ArrayList<Objeto> nominas)
+    public void crearNominasSinProrrata(ArrayList<Objeto> nominas) throws ParseException
     {
         ArrayList<Objeto> nominasSinProrrateo = new ArrayList<Objeto>();
         ArrayList<Objeto> nominasProrrateo = new ArrayList<Objeto>();
+        ArrayList<Objeto> nominasValidas = new ArrayList<Objeto>();
         
-        
+        //COMPROBAMOS QUE LA FECHA DE ENTRADA ES VALIDA
         for(Objeto n : nominas)
+        {
+            Date javaDate= DateUtil.getJavaDate((double)n.getFechaAlta());
+            String añoEntrada = javaDate.toString();
+            String añoVerdadero = añoEntrada.substring(añoEntrada.length()-4,añoEntrada.length());
+            String mesVerdadero = new SimpleDateFormat("MM/dd/yyyy").format(javaDate).substring(0,2);
+    
+            n.setAnio(Integer.parseInt(añoVerdadero));
+            n.setMes(Integer.parseInt(mesVerdadero));
+            
+            if((n.getMes() > Integer.parseInt(ValoresEstaticos.mes)) && (Integer.parseInt(añoVerdadero) >= Integer.parseInt(ValoresEstaticos.año)))
+            {
+                
+                
+            }
+            else
+            {
+                nominasValidas.add(n);
+            }
+        }
+        
+        //LAS DIVIDIMOS EN CON PRORRATEO Y SIN PRORRATEO
+        for(Objeto n : nominasValidas)
         {
             
             if(n.getProrrata().equals("NO"))
@@ -30,7 +57,6 @@ public class NominaSinProrrata
             String categoria = n.getCategoria();
             String salarioBase = "";
             String complemento = "";
-            String antiguedad = n.getFechaAlta();
             
             for(ObjetoCategorias cat : ValoresEstaticos.categorias)
             {
@@ -41,9 +67,24 @@ public class NominaSinProrrata
                 }
             }
             
-            int trienios = calculaNumTrienos(antiguedad);
-            double brutoMes = Double.parseDouble(salarioBase)/14 + Double.parseDouble(complemento)/14 + trienios/14;
-            double brutoAnual = Double.parseDouble(salarioBase) + Double.parseDouble(complemento)+ trienios;
+            int trienios = calculaNumTrienos(n.getAnio(),n.getMes());
+            double importeBrutoTri = 0;
+            String strienios = trienios + ".0";
+            for(ObjetoTrineos tri : ValoresEstaticos.trineos)
+            {
+                  
+                if(tri.getNumTrineos().equals(strienios))
+                {
+                    
+                   importeBrutoTri = Double.parseDouble(tri.getImporteBruto());
+                   
+                }
+            }
+            
+            
+            
+            double brutoMes = Double.parseDouble(salarioBase)/14 + Double.parseDouble(complemento)/14 + importeBrutoTri/14;
+            double brutoAnual = Double.parseDouble(salarioBase) + Double.parseDouble(complemento)+ importeBrutoTri;
             
             String IRPF = "";
             
@@ -62,6 +103,7 @@ public class NominaSinProrrata
             double formacion = (prorrateo * Double.parseDouble(ValoresEstaticos.objcuotas.getFormacionTrab()))/100;
             double liquidoMensual = brutoMes - (ss + desempleo + formacion + Double.parseDouble(IRPF));
             
+            System.out.println(liquidoMensual);
             double costeReal = calcularEmpresario(prorrateo) + brutoMes;
               
         }
@@ -71,7 +113,7 @@ public class NominaSinProrrata
             String categoria = n.getCategoria();
             String salarioBase = "";
             String complemento = "";
-            String antiguedad = n.getFechaAlta();
+            String antiguedad = n.getFechaAlta().toString();
             
             for(ObjetoCategorias cat : ValoresEstaticos.categorias)
             {
@@ -81,10 +123,22 @@ public class NominaSinProrrata
                     complemento = cat.getComplementos(); 
                 }
             }
-            int trienios = calculaNumTrienos(antiguedad);
+            int trienios = calculaNumTrienos(n.getAnio(),n.getMes());
+            double importeBrutoTri = 0;
+            String strienios = trienios + ".0";
+            for(ObjetoTrineos tri : ValoresEstaticos.trineos)
+            {
+                  
+                if(tri.getNumTrineos().equals(strienios))
+                {
+                    
+                   importeBrutoTri = Double.parseDouble(tri.getImporteBruto());
+                   
+                }
+            }
             double prorrateo = calcularProrrateo(salarioBase,complemento,trienios); 
-            double brutoMes = Double.parseDouble(salarioBase)/14 + Double.parseDouble(complemento)/14 + trienios/14 +  prorrateo;
-            double brutoAnual = Double.parseDouble(salarioBase) + Double.parseDouble(complemento)+ trienios;
+            double brutoMes = Double.parseDouble(salarioBase)/14 + Double.parseDouble(complemento)/14 + importeBrutoTri/14 +  prorrateo;
+            double brutoAnual = Double.parseDouble(salarioBase) + Double.parseDouble(complemento)+ importeBrutoTri;
             
             String IRPF = "";
             
@@ -121,10 +175,35 @@ public class NominaSinProrrata
         
         return prorrateo;
     }
-    public int calculaNumTrienos(String antiguedad)
+    public int calculaNumTrienos(int año,int mes)
     {
+        int numeroTrienios = 0;
+        int añoActual = Integer.parseInt(ValoresEstaticos.año);
+        int mesActual = Integer.parseInt(ValoresEstaticos.mes);
+        int añoTrabajador = año;
+        int mesTrabajador = mes;
         
-        return 0;
+        int resta = añoActual - añoTrabajador;
+        int resta2 = resta / 3;
+        
+        if(resta % 3 == 0)
+        {
+
+            if(mesActual>mesTrabajador)
+            {
+                numeroTrienios = resta2;
+            }else
+            {
+                numeroTrienios = resta2 - 1;
+            }
+           
+        }
+        else
+        {
+            numeroTrienios = resta2;
+        }
+        
+        return numeroTrienios;
     }
     
     public double extra(Double brutoMes, Double irpf, String antiguedad)

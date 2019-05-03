@@ -87,7 +87,13 @@ public class LeerExcel
                     for (int c = 0; c < (colum = valorCelda.getLastCellNum()); c++) 
                     {
                         
-                        stringValorCelda = valorCelda.getCell(c) == null?"":(valorCelda.getCell(c).getCellType() == CellType.STRING)?valorCelda.getCell(c).getStringCellValue():(valorCelda.getCell(c).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(c).getNumericCellValue():(valorCelda.getCell(c).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(c).getBooleanCellValue():(valorCelda.getCell(c).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(c).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(c).getCellType() == CellType.ERROR)?"ERROR":"";
+                        stringValorCelda = valorCelda.getCell(c) == null?"":
+                                (valorCelda.getCell(c).getCellType() == CellType.STRING)?valorCelda.getCell(c).getStringCellValue():
+                                (valorCelda.getCell(c).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(c).getNumericCellValue():
+                                (valorCelda.getCell(c).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(c).getBooleanCellValue():
+                                (valorCelda.getCell(c).getCellType() == CellType.BLANK)?"BLANK":
+                                (valorCelda.getCell(c).getCellType() == CellType.FORMULA)?"FORMULA":
+                                (valorCelda.getCell(c).getCellType() == CellType.ERROR)?"ERROR":"";
                         pos = r + "";
                         obj.setPos(pos);
                         switch(c)
@@ -114,9 +120,12 @@ public class LeerExcel
                                 obj.setNacion(stringValorCelda);
                                 break;
                             case 4:
-                                obj.setFechaAlta(stringValorCelda);
+                                obj.setFechaAlta(Double.parseDouble(stringValorCelda));
+                                break;
                             case 8:
                                 obj.setProrrata(stringValorCelda);
+                                break;
+                                
                         }
                        
                     }
@@ -270,9 +279,9 @@ public class LeerExcel
                 {
  
                     stringValorCelda = valorCelda.getCell(2) == null?"":(valorCelda.getCell(2).getCellType() == CellType.STRING)?valorCelda.getCell(2).getStringCellValue():(valorCelda.getCell(2).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(2).getNumericCellValue():(valorCelda.getCell(2).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(2).getBooleanCellValue():(valorCelda.getCell(2).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(2).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(2).getCellType() == CellType.ERROR)?"ERROR":"";
-                    trineos.setImporteBruto(stringValorCelda);
+                    trineos.setNumTrineos(stringValorCelda);
                     stringValorCelda = valorCelda.getCell(3) == null?"":(valorCelda.getCell(3).getCellType() == CellType.STRING)?valorCelda.getCell(3).getStringCellValue():(valorCelda.getCell(3).getCellType() == CellType.NUMERIC)?"" + valorCelda.getCell(3).getNumericCellValue():(valorCelda.getCell(3).getCellType() == CellType.BOOLEAN)?"" + valorCelda.getCell(3).getBooleanCellValue():(valorCelda.getCell(3).getCellType() == CellType.BLANK)?"BLANK":(valorCelda.getCell(3).getCellType() == CellType.FORMULA)?"FORMULA":(valorCelda.getCell(3).getCellType() == CellType.ERROR)?"ERROR":"";   
-                    trineos.setNumTrineos(stringValorCelda); 
+                    trineos.setImporteBruto(stringValorCelda); 
                 }
                  ValoresEstaticos.trineos.add(trineos);
             }
